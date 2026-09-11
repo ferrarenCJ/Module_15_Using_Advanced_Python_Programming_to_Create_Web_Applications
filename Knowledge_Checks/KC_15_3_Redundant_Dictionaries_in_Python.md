@@ -1,72 +1,51 @@
 # Self-Study Knowledge Check 15.3: Redundant Dictionaries in Python
 
-## Score
+## Learning Outcome
 
-Completed Successfully
-
-Questions: 6
-
-Result: 6/6 Correct
+- Implement redundant dictionaries in Python.
 
 ---
 
-## Key Concepts
+## Question 1
 
-### What is a Redundant Dictionary?
+### What is the main benefit of utilizing Python redundant dictionaries?
 
-A redundant dictionary stores the same information in multiple dictionary structures to provide multiple access paths to the data.
+**Answer:** Fast access
 
-Example:
+### Explanation
 
-```python
-grades_by_student = {
-    1: {1: 98, 2: 108}
-}
-
-grades_by_pset = {
-    1: {1: 98},
-    2: {1: 108}
-}
-```
-
-The data is duplicated intentionally to improve lookup performance.
+Redundant dictionaries store the same data in multiple structures, allowing information to be accessed through different lookup paths. This improves performance and provides faster access to stored data.
 
 ---
 
-## Benefits
+## Question 2
 
-### Fast Access
+### How would you write code to define and initialize a blank redundant dictionary with column names equal to `column1` and `column2`?
 
-Dictionary lookups are generally O(1).
-
-Redundant dictionaries allow data to be accessed through multiple lookup paths without performing additional searches.
-
-Example:
-
-```python
-grades_by_student[1]
-grades_by_pset[2]
-```
-
----
-
-## Creating a Blank Redundant Dictionary
+**Answer:**
 
 ```python
 def empty():
-    return {
-        "column1": {},
-        "column2": {}
-    }
+    return {"column1": {}, "column2": {}}
 
 db = empty()
 ```
 
+### Explanation
+
+A redundant dictionary is initialized by defining a function that returns a dictionary containing multiple nested dictionaries that will hold related data.
+
 ---
 
-## Adding Data
+## Question 3
 
-Helper functions are commonly used.
+### Can you add keys and values to a redundant dictionary?
+
+**Answer:** Yes, you can write a function to append keys and values to a dictionary.
+
+### Explanation
+
+Redundant dictionaries behave like normal Python dictionaries. Helper functions can be created to add and maintain data within the dictionary structure.
 
 Example:
 
@@ -77,19 +56,82 @@ def addStudentDict(db, student_id, student_name):
 
 ---
 
-## Helper Functions
+## Question 4
 
-Redundant dictionaries often require custom helper functions for:
+### How can you add values to a redundant dictionary key?
 
-- Insert
-- Update
-- Delete
-- Search
-- Reporting
+**Answer:** You can write a helper function to add values to a redundant dictionary key.
 
-Examples:
+### Explanation
+
+Helper functions provide a controlled way to insert values into nested dictionary structures while maintaining consistency across the redundant data store.
+
+---
+
+## Question 5
+
+### What operations and functions must be defined and called to define a redundant dictionary?
+
+**Answer:** The operations and functions you will define and call will depend on the structure of the redundant dictionary that you want to create.
+
+### Explanation
+
+Different database designs require different helper functions. The specific functions depend on how the dictionary is organized and how the data will be accessed.
+
+Examples include:
 
 ```python
+empty()
+addStudentDict()
+addPsetDict()
+addGradeDict()
+```
+
+---
+
+## Question 6
+
+### Are separate user-defined functions needed to perform different types of data manipulation on redundant dictionaries?
+
+**Answer:** Yes, user-defined helper functions are needed to handle redundant dictionaries.
+
+### Explanation
+
+Separate helper functions are typically created for:
+
+- Creating records
+- Updating records
+- Retrieving records
+- Calculating values
+- Managing nested dictionary structures
+
+These functions simplify working with redundant dictionary-based databases.
+
+---
+
+## Key Concepts
+
+### Redundant Dictionaries
+
+A redundant dictionary stores information in multiple locations to optimize lookup speed.
+
+### Benefits
+
+- Faster data access
+- Multiple lookup paths
+- Improved performance
+- Efficient retrieval
+
+### Trade-Offs
+
+- Increased memory usage
+- Additional maintenance required
+- Updates may need to be applied to multiple structures
+
+### Common Helper Functions
+
+```python
+empty()
 addStudentDict()
 addPsetDict()
 addGradeDict()
@@ -101,26 +143,9 @@ gradeOnWeighted()
 
 ## Key Takeaways
 
-- Redundant dictionaries improve performance.
-- Data may be stored in multiple locations.
-- Helper functions simplify maintenance.
-- Dictionary lookups are typically O(1).
-- The required functions depend on the dictionary structure.
-- Redundancy trades memory for speed.
-
----
-
-## Data Engineering Relevance
-
-Redundant dictionaries demonstrate concepts that later appear in:
-
-- Database indexes
-- Caching
-- Data warehouses
-- Star schemas
-- Denormalized reporting tables
-- Analytics platforms
-
-A common principle:
-
-> Duplicate data strategically to optimize access patterns and query performance.
+- Redundant dictionaries improve lookup performance.
+- Multiple dictionary structures may contain the same data.
+- Helper functions are commonly used to manage redundant data.
+- Dictionary lookups generally provide O(1) access time.
+- The design of helper functions depends on the dictionary structure being implemented.
+- Redundant dictionaries demonstrate concepts used in database indexing and high-performance data systems.
