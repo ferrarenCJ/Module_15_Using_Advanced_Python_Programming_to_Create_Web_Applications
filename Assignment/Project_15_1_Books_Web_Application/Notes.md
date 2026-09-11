@@ -1,146 +1,10 @@
 # Project 15.1 Notes
 
-## Project Goal
+## Project Summary
 
-Create a secure web application that manages a collection of books and uses JWT authentication and authorization to control user access.
+The goal of this project was to create a secure Books Web Application that uses JWT authentication and authorization to control access to application features.
 
----
-
-# Application Requirements
-
-## Books
-
-The application should support:
-
-- Book title
-- Author
-- Genre
-- Description
-- Cover image
-
----
-
-## Users
-
-The application should support multiple users.
-
-Example users:
-
-| Username | Role |
-|-----------|--------|
-| reader1 | Reader |
-| reader2 | Reader |
-| admin1 | Admin |
-| admin2 | Admin |
-
----
-
-# Authentication Workflow
-
-## Step 1
-
-User logs in.
-
-```text
-Username
-Password
-```
-
----
-
-## Step 2
-
-Authorization server validates credentials.
-
----
-
-## Step 3
-
-JWT is generated.
-
-```text
-Header.Payload.Signature
-```
-
----
-
-## Step 4
-
-JWT returned to user.
-
----
-
-## Step 5
-
-User sends HTTP requests containing JWT.
-
----
-
-## Step 6
-
-Application server validates JWT.
-
----
-
-# Authorization
-
-## Reader
-
-Allowed:
-
-- View books
-- Search books
-
-Not allowed:
-
-- Create books
-- Delete books
-- Manage users
-
----
-
-## Admin
-
-Allowed:
-
-- View books
-- Create books
-- Modify books
-- Delete books
-- Manage users
-
----
-
-# JWT Notes
-
-JWT stands for:
-
-```text
-JSON Web Token
-```
-
-Components:
-
-```text
-Header
-Payload
-Signature
-```
-
-Payload contains:
-
-```text
-Claims
-```
-
-Example claims:
-
-```json
-{
-  "userId": "12345",
-  "role": "admin"
-}
-```
+The application supports multiple users and enforces different permissions based on assigned roles.
 
 ---
 
@@ -148,60 +12,292 @@ Example claims:
 
 ## Authentication
 
+Authentication answers:
+
+```text
 Who are you?
+```
+
+Users submit:
+
+- Username
+- Password
+
+The application verifies the credentials before granting access.
 
 ---
 
 ## Authorization
 
+Authorization answers:
+
+```text
 What are you allowed to do?
+```
+
+Permissions are determined after authentication.
+
+---
+
+## JSON Web Tokens (JWT)
+
+JWT stands for:
+
+```text
+JSON Web Token
+```
+
+JWTs are used to securely exchange information between:
+
+- User
+- Authorization Server
+- Application Server
+
+---
+
+## JWT Structure
+
+A serialized JWT consists of:
+
+```text
+Header
+Payload
+Signature
+```
+
+Example:
+
+```text
+Header.Payload.Signature
+```
 
 ---
 
 ## Claims
 
-Information stored in the JWT payload.
+A claim is data stored inside the JWT payload.
+
+Examples:
+
+```text
+Username
+Role
+Permissions
+Expiration Date
+```
+
+Example:
+
+```json
+{
+  "username": "admin2",
+  "role": "admin"
+}
+```
 
 ---
 
-## Secret Key
+# User Roles
 
-Shared between:
+## Admin
 
-- Authorization Server
-- Application Server
+Admin users can:
 
-Used to validate JWTs.
+- View books
+- Add books
+- Upload images
 
----
+Users:
 
-# Testing Checklist
-
-- [ ] User login works
-- [ ] JWT generated correctly
-- [ ] JWT validation works
-- [ ] Reader role restricted
-- [ ] Admin role has full access
-- [ ] Book images display
-- [ ] Unauthorized access prevented
-- [ ] Application functions correctly
+```text
+testuser
+Anne
+admin2
+```
 
 ---
 
-# Personal Notes
+## Reader
 
-## Challenges
+Reader users can:
 
--
+- View books
 
-## Lessons Learned
+Reader users cannot:
 
--
+- Add books
+- Upload images
 
-## Improvements
+Users:
 
--
+```text
+John
+reader2
+```
 
-## Additional Features
+---
 
--
+# Admin Authorization Decorator
+
+Custom decorator:
+
+```python
+def admin_required(fn):
+```
+
+Purpose:
+
+- Verify JWT claims
+- Confirm administrator privileges
+- Restrict protected functionality
+
+---
+
+## Logic
+
+```python
+if claims.get("role") != "admin":
+    return "Access Denied"
+```
+
+Only administrators are allowed to continue.
+
+---
+
+# Books Collection
+
+## Original Books
+
+1. Lean Startup
+2. A Seat at the Table
+3. Lean Thinking
+
+---
+
+## Added Books
+
+4. Fluent Python
+5. Python Crash Course
+
+---
+
+# Images
+
+Cover images used:
+
+```text
+image1.png
+image2.png
+image3.png
+image4.png
+image5.png
+```
+
+Image display was implemented using:
+
+```html
+/static/image{{book['id']}}.png
+```
+
+---
+
+# Testing Performed
+
+## Admin Testing
+
+### Login
+
+```text
+testuser
+testuser
+```
+
+Result:
+
+```text
+Success
+```
+
+---
+
+### Add Book
+
+Result:
+
+```text
+Success
+```
+
+Added:
+
+```text
+Data Engineering on AWS
+```
+
+---
+
+## Reader Testing
+
+### Login
+
+```text
+reader2
+reader2
+```
+
+Result:
+
+```text
+Success
+```
+
+---
+
+### Add Book
+
+Result:
+
+```text
+Access Denied. Admin privileges required.
+```
+
+Authorization successfully enforced.
+
+---
+
+# Lessons Learned
+
+## Authentication vs Authorization
+
+Authentication:
+
+```text
+Identity Verification
+```
+
+Authorization:
+
+```text
+Permission Verification
+```
+
+---
+
+## JWT Benefits
+
+- Stateless authentication
+- Secure token exchange
+- Easy role management
+- Scalable web application design
+
+---
+
+## Flask Security
+
+Flask decorators provide an effective mechanism for protecting routes and enforcing security policies.
+
+---
+
+# Personal Reflection
+
+This project demonstrated how modern web applications implement authentication and authorization using JWT tokens. It also reinforced the importance of role-based access control and secure application design. The project provided hands-on experience with Flask, JWT configuration, decorators, HTML templates, and user management.

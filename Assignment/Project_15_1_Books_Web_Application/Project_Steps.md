@@ -2,517 +2,532 @@
 
 ## Objective
 
-Develop a secure Books Web Application using JWT authentication and authorization.
-
-The application will:
-
-- Display a collection of books
-- Support multiple users
-- Authenticate users
-- Authorize users based on roles
-- Restrict access to protected resources
+Build a secure Books Web Application using Flask and JSON Web Tokens (JWT) that supports authentication, authorization, role-based access control, book management, and book cover images.
 
 ---
 
-# Phase 1: Environment Setup
+# Project Workflow
 
-## Step 1: Create Project Folder
+## Step 1 - Install Flask Dependencies
+
+Activate the Module 15 virtual environment.
+
+Install Flask-RESTful:
+
+```bash
+pip install flask-restful
+```
+
+Install Flask-JWT-Extended:
+
+```bash
+pip install flask-jwt-extended
+```
+
+Verify successful installation.
+
+### Screenshot
+
+- Flask-RESTful installation
+- Flask-JWT-Extended installation
+
+---
+
+# Step 2 - Open Project in VS Code
+
+Open:
 
 ```text
 Project_15_1_Books_Web_Application
-│
-├── app.py
-├── users.py
-├── books.py
-├── requirements.txt
-├── static
-│   └── images
-├── templates
-└── README.md
 ```
+
+Verify all project folders are visible.
+
+### Screenshot
+
+Project folder opened in VS Code.
 
 ---
 
-## Step 2: Create Virtual Environment
+# Step 3 - Review Starter Application
 
-```bash
-python -m venv venv
+Review:
+
+```text
+app.py
+templates/
+static/
 ```
 
-Activate environment:
+Understand:
 
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-### Linux/Mac
-
-```bash
-source venv/bin/activate
-```
+- Books collection
+- Users collection
+- Authentication flow
+- Authorization flow
 
 ---
 
-## Step 3: Install Required Libraries
+# Step 4 - Add Additional Books
 
-```bash
-pip install flask
-pip install flask-jwt
-pip install pyjwt
-```
-
-Export requirements:
-
-```bash
-pip freeze > requirements.txt
-```
-
----
-
-# Phase 2: Create the Books Database
-
-## Step 4: Create Book Data Structure
-
-Each book should contain:
-
-```python
-{
-    "id": 1,
-    "title": "Python Basics",
-    "author": "John Smith",
-    "genre": "Programming",
-    "image": "python.jpg"
-}
-```
-
----
-
-## Step 5: Create Initial Book Collection
-
-Add multiple books.
-
-Example:
+Locate:
 
 ```python
 books = [
-    {...},
-    {...},
-    {...}
-]
 ```
 
-Minimum recommendation:
+Add two additional books.
 
-```text
-5–10 books
+### Added Books
+
+```python
+{
+    "id": 4,
+    "author": "Luciano Ramalho",
+    "country": "Brazil",
+    "language": "English",
+    "title": "Fluent Python",
+    "year": 2022,
+},
+{
+    "id": 5,
+    "author": "Eric Matthes",
+    "country": "USA",
+    "language": "English",
+    "title": "Python Crash Course",
+    "year": 2023,
+}
 ```
+
+### Screenshot
+
+Books list showing both new books.
 
 ---
 
-## Step 6: Add Book Images
+# Step 5 - Add Cover Images
 
-Store images inside:
-
-```text
-static/images
-```
-
-Examples:
+Copy two new cover images into:
 
 ```text
-python.jpg
-flask.jpg
-data_engineering.jpg
-aws.jpg
-sql.jpg
+static/
 ```
+
+### Added Images
+
+```text
+image4.png
+image5.png
+```
+
+### Screenshot
+
+Open image4.png in VS Code.
+
+### Screenshot
+
+Open image5.png in VS Code.
 
 ---
 
-# Phase 3: Create User Database
+# Step 6 - Update books.html
 
-## Step 7: Create Users
+Open:
 
-Example users:
+```text
+templates/books.html
+```
+
+Add image display logic.
+
+### Added HTML
+
+```html
+/static/image{{book['id']}}.png
+```
+
+This dynamically displays the cover image associated with each book.
+
+### Screenshot
+
+Updated books.html file.
+
+---
+
+# Step 7 - Add Additional Users
+
+Locate:
 
 ```python
 users = [
-    {
-        "username": "reader",
-        "password": "reader123",
-        "role": "reader"
-    },
-    {
-        "username": "admin",
-        "password": "admin123",
-        "role": "admin"
-    }
-]
 ```
 
----
-
-## Step 8: Define User Roles
-
-### Reader
-
-Permissions:
-
-```text
-View Books
-Search Books
-```
-
----
-
-### Admin
-
-Permissions:
-
-```text
-View Books
-Add Books
-Update Books
-Delete Books
-Manage Users
-```
-
----
-
-# Phase 4: Implement Authentication
-
-## Step 9: Create Login Endpoint
-
-Example route:
+Add:
 
 ```python
-/login
+{"username": "admin2", "password": "admin2", "role": "admin"},
+{"username": "reader2", "password": "reader2", "role": "reader"}
+```
+
+### Screenshot
+
+Updated users list.
+
+---
+
+# Step 8 - Define Authorization Function
+
+Create custom authorization decorator:
+
+```python
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        claims = get_jwt()
+
+        if claims.get("role") != "admin":
+            return "Access Denied. Admin privileges required.", 403
+
+        return fn(*args, **kwargs)
+
+    return wrapper
 ```
 
 Purpose:
 
-```text
-Receive username/password
-```
+- Restrict administrative functions
+- Verify user role
+- Enforce role-based access control
+
+### Screenshot
+
+admin_required function.
 
 ---
 
-## Step 10: Validate Credentials
+# Step 9 - Fix Authentication Logic
 
-Check:
+Update JWT claims.
+
+### Original
 
 ```python
-username
-password
+validUser["roles"]
 ```
 
-against user database.
-
----
-
-## Step 11: Generate JWT
-
-If login succeeds:
-
-Create token containing:
+### Updated
 
 ```python
-{
-    "username": username,
-    "role": role
-}
+validUser["role"]
 ```
 
 ---
 
-## Step 12: Return JWT
+Update JWT creation method.
 
-Response:
-
-```json
-{
-    "token": "JWT_TOKEN"
-}
-```
-
----
-
-# Phase 5: Protect Routes
-
-## Step 13: Create Protected Route
-
-Example:
+### Updated
 
 ```python
-/books
-```
-
-Require JWT to access.
-
----
-
-## Step 14: Validate JWT
-
-Verify:
-
-- Signature
-- User
-- Expiration
-- Permissions
-
----
-
-## Step 15: Reject Invalid Tokens
-
-Examples:
-
-```text
-Missing Token
-Expired Token
-Modified Token
-```
-
-Return:
-
-```text
-401 Unauthorized
+access_token = create_access_token(
+    identity=username,
+    additional_claims=user_claims
+)
 ```
 
 ---
 
-# Phase 6: Book Viewing Features
+# Step 10 - Run Application
 
-## Step 16: Display All Books
+Navigate to source folder.
 
-Reader and Admin should be able to:
-
-```text
-View Books
+```bash
+cd Source_Code
 ```
 
-Example page:
+Start application.
 
-```text
-Books Collection
----------------
-Book 1
-Book 2
-Book 3
+```bash
+python app.py
 ```
-
----
-
-## Step 17: Display Book Images
-
-Each record should show:
-
-```text
-Title
-Author
-Image
-Genre
-```
-
----
-
-## Step 18: Search Books
-
-Allow searching by:
-
-```text
-Title
-Author
-Genre
-```
-
----
-
-# Phase 7: Admin Features
-
-## Step 19: Add New Books
-
-Admin only.
-
-Fields:
-
-```text
-Title
-Author
-Genre
-Image
-```
-
----
-
-## Step 20: Edit Books
-
-Admin only.
-
-Update:
-
-```text
-Title
-Author
-Genre
-```
-
----
-
-## Step 21: Delete Books
-
-Admin only.
-
-Remove book from collection.
-
----
-
-# Phase 8: Authorization
-
-## Step 22: Enforce Reader Permissions
-
-Reader can:
-
-✅ View
-
-✅ Search
-
-Reader cannot:
-
-❌ Add
-
-❌ Edit
-
-❌ Delete
-
----
-
-## Step 23: Enforce Admin Permissions
-
-Admin can:
-
-✅ View
-
-✅ Search
-
-✅ Add
-
-✅ Edit
-
-✅ Delete
-
----
-
-# Phase 9: Security Testing
-
-## Step 24: Test Reader Account
 
 Verify:
 
 ```text
-Reader can view books.
-Reader cannot modify books.
+Running on http://127.0.0.1:5000
 ```
+
+### Screenshot
+
+Terminal showing localhost connection.
 
 ---
 
-## Step 25: Test Admin Account
+# Step 11 - Open Application
+
+Open:
+
+```text
+http://localhost:5000
+```
+
+Verify login page loads.
+
+### Screenshot
+
+Homepage displayed.
+
+---
+
+# Step 12 - Login as Admin
+
+Login credentials:
+
+```text
+Username: testuser
+Password: testuser
+```
+
+or
+
+```text
+Username: admin2
+Password: admin2
+```
+
+Verify successful login.
+
+### Screenshot
+
+Admin login success.
+
+---
+
+# Step 13 - Verify Books Page
+
+Navigate to:
+
+```text
+Books
+```
 
 Verify:
 
+- Lean Startup
+- A Seat at the Table
+- Lean Thinking
+- Fluent Python
+- Python Crash Course
+
+Verify all associated images display correctly.
+
+### Screenshot
+
+Books page with all cover images.
+
+---
+
+# Step 14 - Add New Book
+
+Navigate to:
+
 ```text
-Admin can perform all actions.
+Add Book
+```
+
+Add:
+
+```text
+Author: Ferraren
+Title: Data Engineering on AWS
+```
+
+Submit form.
+
+Verify book appears in collection.
+
+### Screenshot
+
+Book successfully added.
+
+---
+
+# Step 15 - Login as Reader
+
+Logout.
+
+Login using:
+
+```text
+Username: reader2
+Password: reader2
+```
+
+Verify successful login.
+
+### Screenshot
+
+Reader login success.
+
+---
+
+# Step 16 - Test Authorization
+
+While logged in as reader:
+
+Navigate to:
+
+```text
+Add Book
+```
+
+Expected result:
+
+```text
+Access Denied. Admin privileges required.
+```
+
+Verify authorization enforcement.
+
+### Screenshot
+
+Reader access denied message.
+
+---
+
+# Testing Results
+
+## Admin Testing
+
+### Login
+
+```text
+Success
+```
+
+### View Books
+
+```text
+Success
+```
+
+### Add Book
+
+```text
+Success
 ```
 
 ---
 
-## Step 26: Test JWT Validation
+## Reader Testing
 
-Verify:
+### Login
 
 ```text
-Valid JWT → Access Granted
+Success
+```
 
-Invalid JWT → Access Denied
+### View Books
 
-Expired JWT → Access Denied
+```text
+Success
+```
+
+### Add Book
+
+```text
+Access Denied
 ```
 
 ---
 
-# Phase 10: Final Review
+# Security Features Implemented
 
-## Step 27: Review Application
+## JWT Authentication
 
-Verify:
-
-- Users authenticate correctly
-- JWT tokens generated correctly
-- JWT validation works
-- Reader restrictions work
-- Admin permissions work
-- Books display correctly
-- Images load correctly
+- Token generation
+- Token validation
+- Secure session handling
 
 ---
 
-## Step 28: Capture Screenshots
+## Role-Based Access Control
 
-Take screenshots of:
+Roles:
 
 ```text
-Login Page
-
-Reader View
-
-Admin View
-
-Books List
-
-JWT Authentication
-
-Role-Based Access Example
+Admin
+Reader
 ```
 
-Save under:
+Permissions are enforced through:
 
-```text
-Screenshots/
+```python
+admin_required()
 ```
 
 ---
 
-## Step 29: Final Documentation
+# Project Enhancements
 
-Update:
+## Books Added
 
-```text
-README.md
-Notes.md
-Project_Steps.md
-```
-
-Document:
-
-- Architecture
-- Authentication Flow
-- Authorization Flow
-- Lessons Learned
+- Fluent Python
+- Python Crash Course
 
 ---
 
-# Deliverables Checklist
+## Images Added
 
-- [ ] Flask application created
-- [ ] User database created
-- [ ] Book database created
-- [ ] JWT authentication implemented
-- [ ] Authorization implemented
-- [ ] Reader role implemented
-- [ ] Admin role implemented
-- [ ] Book search implemented
-- [ ] Book add/update/delete implemented
-- [ ] Screenshots captured
-- [ ] Documentation completed
-- [ ] Project submitted
+- image4.png
+- image5.png
+
+---
+
+## Users Added
+
+### Admin
+
+```text
+admin2
+```
+
+### Reader
+
+```text
+reader2
+```
+
+---
+
+# Deliverables Completed
+
+- [x] Flask-RESTful Installed
+- [x] Flask-JWT-Extended Installed
+- [x] Project Opened in VS Code
+- [x] Two Books Added
+- [x] Two Cover Images Added
+- [x] books.html Updated
+- [x] Admin User Added
+- [x] Reader User Added
+- [x] admin_required Implemented
+- [x] Application Running
+- [x] Homepage Verified
+- [x] Admin Login Verified
+- [x] Books Display Verified
+- [x] Book Addition Verified
+- [x] Reader Login Verified
+- [x] Reader Access Restricted
+- [x] Screenshots Captured
+- [x] Project Complete
+
+---
+
+# Key Takeaways
+
+- JWT provides secure authentication services.
+- Authorization determines what authenticated users may do.
+- Role-based access control helps secure web applications.
+- Flask decorators provide an efficient way to protect routes.
+- JWT claims can store user roles and permissions.
+- Modern web applications frequently use JWT authentication for session management.
+- Administrative functionality should always be protected through authorization checks.
