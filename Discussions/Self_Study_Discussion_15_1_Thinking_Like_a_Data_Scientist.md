@@ -13,3 +13,4 @@ This resource helped me better understand list comprehensions and dictionary com
 ## Tip
 
 Before writing code, sketch the dictionary structure on paper. Visualizing nested and redundant dictionaries made it much easier to implement the helper functions and understand how data flows through the application.
+
