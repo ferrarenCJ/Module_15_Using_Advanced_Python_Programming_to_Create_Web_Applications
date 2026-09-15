@@ -1,6 +1,6 @@
 ## Sandbox
 
-The Sandbox folder was used as a workspace for experimenting with concepts introduced throughout Module 15.
+The Sandbox folder contains experimental files used to explore concepts introduced throughout Module 15.
 
 ```text
 Sandbox/
@@ -12,16 +12,18 @@ Sandbox/
 
 ### Purpose
 
-- `dictionary_testing.py`  
-  Workspace for experimenting with Python dictionaries, nested dictionaries, and redundant dictionaries.
+These files were reserved for experimentation and practice with:
 
-- `flask_testing.py`  
-  Workspace reserved for Flask application experiments and route testing.
+- Dictionary operations
+- Flask web applications
+- JWT authentication
+- Weighted grade calculations
 
-- `jwt_testing.py`  
-  Workspace reserved for JSON Web Token (JWT) authentication and authorization exercises.
+### Benefits
 
-- `weighted_average_testing.py`  
-  Workspace reserved for testing weighted grade calculation logic.
+- Safe environment for testing ideas
+- Practice before implementing project solutions
+- Supports learning through experimentation
 
-> Note: These files serve as sandbox placeholders for experimentation and practice related to Module 15 topics.
+> Note: These files serve as optional workspaces for testing Module 15 concepts.
+``
